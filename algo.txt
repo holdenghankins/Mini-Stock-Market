@@ -1,0 +1,100 @@
+Notes:
+    All months have a perfect 4 weeks (makes math easier)
+    Bank holidays are ignored
+    Assets can be negative to represent debt
+
+abs securty {
+    str name
+    float price
+    float initPrice
+    array<float, 20> monthHist
+    int currentDay
+
+    str getName(){}
+    float getPrice(){}
+    float getChange(int days ago){}
+    virtual void simDay() = 0;
+    virtual void calcPrice() = 0;
+    string toString() {
+        return name + " - " + "
+    }
+}
+
+stock:public security {
+    float revenue
+    float expenditures
+    float assets
+    array<float, 2> growth
+    float hype
+    int numLeft
+
+    void simDay {
+        currentDay++
+        applyGrowth()
+        calcPrice()
+        trade()
+        calcHype()
+    }
+
+    void applyGrowth() {
+        let g be a range of values growth[0] -- growth[1]
+        generate 3 random numbers, g1 g2 g3, ∈ g
+        add g1 to revenue
+        add -g2 to expenditures
+        add g3/4 to assets, subtract from revenue
+    }
+
+    void calcPrice() {
+        return = revenue * hype / numLeft
+    }
+
+    void trade() {
+        numLeft = (revenue * hype) / price
+    }
+
+    float calcHype() {
+        let change = (getChange(1) + getChange(5) + getChange(20))
+        hype += change
+    }
+}
+
+sector {
+    array<stock*, numStocks> stocks
+    fund* fundPtr
+
+    simDay {
+        for each stock in sector {
+            security.simDay
+            cout << security
+        }
+        fund.simDay
+        cout << fund
+    }
+}
+
+fund:public security {
+    sector* sectorPtr
+    void simDay() {
+        calcPrice
+        saveDay
+    }
+
+    void calcPrice() {
+        add top 3 stocks in sector, divide by 3
+    }
+}
+
+market {
+    struct index {
+        array<security*, numSecurities> numSecurities
+        float value
+    }
+
+    array<sector*, numStocks> sectors
+
+    void simDay {
+        for each sector {
+            sector.simDay
+        }
+    }
+}
