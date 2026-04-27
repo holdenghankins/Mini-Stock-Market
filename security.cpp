@@ -3,7 +3,7 @@
 
 security::security() {
     this->name = "";
-    this->initPrice, price = 0.0f;
+    this->initPrice = this->price = 0.0f;
     initHistory();
 }
 
@@ -15,8 +15,7 @@ security::security(string name, float initPrice) {
 
 void security::initHistory() {
     currentDay = 0;
-    monthHist.at(0) = price;
-    for (int i = 1; i < 21; i++) monthHist.at(i) = -1;
+    for (int i = 0; i < 20; i++) monthHist.at(i) = -1.0f;
 }
 
 string security::getName() {
@@ -33,10 +32,13 @@ void security::setPrice(float price) {
 
 float security::getChange(int daysAgo) {
     int dayToGet = currentDay - daysAgo;
-    while (currentDay < 0) {
-        currentDay += 21;
+    while (dayToGet < 0) {
+        dayToGet += 20;
     }
-    return calcPercentChange(price, monthHist.at(daysAgo));
+    if (monthHist.at(dayToGet) < 0) {
+        return 0.0f;
+    }
+    return calcPercentChange(price, monthHist.at(dayToGet));
 }
 
 float security::getTotalChange() {
@@ -46,7 +48,8 @@ float security::getTotalChange() {
 
 
 void security::nextDay() {
-    currentDay++;
+    currentDay = (currentDay + 1) % 20;
+    monthHist.at(currentDay) = price;
 }
 
 float security::calcPercentChange(float f1, float f2) {
@@ -54,6 +57,12 @@ float security::calcPercentChange(float f1, float f2) {
 }
 
 string security::toString() {
-    return ("%s: %s | %s today, %s week, %s month, %s all time", 
-        name, price, to_string(getChange(1)), to_string(getChange(5)), to_string(getChange(20)), to_string(getTotalChange()));
+    ostringstream oss;
+    oss << fixed << setprecision(2);
+    oss << name << ": $" << price
+        << " | " << getChange(1)  << "% today"
+        << ", " << getChange(5)  << "% week"
+        << ", " << getChange(20) << "% month"
+        << ", " << getTotalChange() << "% all time";
+    return oss.str();
 }

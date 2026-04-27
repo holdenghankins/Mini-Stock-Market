@@ -1,5 +1,5 @@
-run: security.o stock.o main.o
-	g++ -g security.o stock.o main.o -o run
+sim: security.o stock.o main.o
+	g++ -g security.o stock.o main.o -o sim
 
 security.o: security.cpp
 	g++ -c -g security.cpp
@@ -14,8 +14,8 @@ clean:
 	rm *.o
 	rm run
 
-run: run
-	./run
+run: sim
+	./sim
 
-debug: run
-	gdb run
+debug: sim
+	gdb sim

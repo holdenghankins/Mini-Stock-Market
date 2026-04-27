@@ -35,11 +35,13 @@ void stock::applyRange() {
 }
 
 void stock::calcPrice() {
-    setPrice(revenue * hype / numLeft);
+    float current = getPrice();
+    setPrice((revenue * hype / numLeft) + genRandFloat(-(current/200), current/200)); // += 1% for more variation
 }
 
 void stock::trade() {
-    numLeft = (revenue * hype) / getPrice();
+    float demand = (revenue * hype) / getPrice();
+    numLeft = std::max(1.0f, numLeft + (demand - numLeft) * 0.1f);
 }
 
 void stock::calcHype() {
@@ -58,18 +60,32 @@ void stock::calcHype() {
         monthChange = 0.0f;
     }
 
-    hype += (dayChange + weekChange + monthChange) / 3 + genRandFloat(-0.1f, 0.1f);
+    float newHype = dayChange / 100.0f;
+    if (newHype > 0) {
+        hype += (min(0.005f, newHype) + genRandFloat(-0.01f, 0.01f));
+    } else {
+        hype += (max(-0.005f, newHype) - genRandFloat(-0.01f, 0.01f));
+    }
 }
 
 float stock::genRandFloat(float lower, float upper) {
     random_device rng;
     mt19937 gen(rng());
-    uniform_int_distribution<float> range(lower, upper);
+    uniform_real_distribution <float> range(lower, upper);
     return range(gen);
 }
 
 string stock::debugString() {
-    return ("%s - %s, %s$ - %s, %s, %s | + %s -%s, assets %s, hype %s", 
-        getName, getPrice, to_string(getChange(1)), to_string(getChange(5)), to_string(getChange(20)), to_string(getTotalChange()),
-    to_string(revenue), to_string(expenditures), to_string(assets), to_string(hype));
+    ostringstream oss;
+    oss << fixed << setprecision(2);
+    oss << getName() << " - $" << getPrice()
+        << " | " << getChange(1)  << "% today"
+        << ", " << getChange(5)  << "% week"
+        << ", " << getChange(20) << "% month"
+        << ", " << getTotalChange() << "% all time"
+        << " | rev $" << revenue
+        << ", exp $" << expenditures
+        << ", assets $" << assets
+        << ", hype " << hype;
+    return oss.str();
 }
