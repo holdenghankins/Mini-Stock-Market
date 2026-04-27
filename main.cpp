@@ -1,7 +1,7 @@
 #include "stock.h"
 
 int main() {
-    stock s = stock("northrop", 1000000.0f, 1000000.0f, 5000.0f, 0.0f, 0.0f, 
+    stock s = stock("northrop", 1000000.0f, 1000000.0f, 5000.0f, 
         1, 5000);
     
     cout << s.debugString() << "\n How far would you like to sim: ";

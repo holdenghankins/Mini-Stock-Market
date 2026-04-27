@@ -37,7 +37,7 @@ private:
     float genRandFloat(float lower, float upper);
     void applyInterest();
 public:
-    stock(string name, float revenue, float expenditures, float netAssets, float rangeLower, float rangeUpper, 
+    stock(string name, float revenue, float expenditures, float netAssets, 
         float hype, int numLeft);
     void simDay();
     string debugString();

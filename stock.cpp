@@ -1,14 +1,13 @@
 #include "stock.h"
 
-stock::stock(string name, float revenue, float expenditures, float netAssets, 
-             float rangeLower, float rangeUpper, float hype, int numLeft)
+stock::stock(string name, float revenue, float expenditures, float netAssets, float hype, int numLeft)
     : security(name, (revenue * hype) / numLeft)
 {
     this->revenue = revenue;
     this->expenditures = expenditures;
     this->netAssets = netAssets;
-    this->rangeLower = rangeLower;
-    this->rangeUpper = rangeUpper;
+    this->rangeLower = 0;
+    this->rangeUpper = 0;
     this->hype = hype;
     this->numLeft = numLeft;
     initHistory();
@@ -83,7 +82,7 @@ void stock::calcHype() {
     }
 
     // Pops bubbles
-    if (genRandFloat(hype, 100) > 99) {
+    if (genRandFloat(hype, 1000) > 999) {
         hype = 1;
     }
 }
