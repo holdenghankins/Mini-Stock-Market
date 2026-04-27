@@ -1,9 +1,8 @@
-#ifndef STOCK_H_EXISTS
-#define STOCK_H_EXISTS
+#ifndef SECURITY_H_EXISTS
+#define SECURITY_H_EXISTS
 
 #include <array>
 #include <iostream>
-#include <random>
 #include <string>
 
 using namespace std;
@@ -20,9 +19,16 @@ private:
     float calcPercentChange(float, float);
 
 public:
+    security();
     security(string name, float initPrice);
     string getName();
     float getPrice();
+    void setPrice(float price);
+    void nextDay();
+
+    // Initilizes the history array with -1 values while setting day[0] to price
+    // Sets the day to 0
+    void initHistory();
 
     // Give the change as a percentage
     float getChange(int daysAgo);
