@@ -12,7 +12,7 @@ main.o: security.h stock.h main.cpp
 
 clean:
 	rm *.o
-	rm run
+	rm sim
 
 run: sim
 	./sim

@@ -11,7 +11,7 @@ private:
     // Attributes
     float revenue;
     float expenditures;
-    float assets;
+    float netAssets;
     float rangeLower;
     float rangeUpper;
     float hype;
@@ -31,9 +31,13 @@ private:
 
     // Adds 1 day, 1 week, and 1 month change, / 3
     void calcHype();
+
+    // Adds assets and expendatures together, then adds to either upper or lower bound
+    void adjustRange();
     float genRandFloat(float lower, float upper);
+    void applyInterest();
 public:
-    stock(string name, float revenue, float expenditures, float assets, float rangeLower, float rangeUpper, 
+    stock(string name, float revenue, float expenditures, float netAssets, float rangeLower, float rangeUpper, 
         float hype, int numLeft);
     void simDay();
     string debugString();

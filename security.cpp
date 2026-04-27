@@ -45,8 +45,6 @@ float security::getTotalChange() {
     return calcPercentChange(price, initPrice);
 }
 
-
-
 void security::nextDay() {
     currentDay = (currentDay + 1) % 20;
     monthHist.at(currentDay) = price;
@@ -60,9 +58,7 @@ string security::toString() {
     ostringstream oss;
     oss << fixed << setprecision(2);
     oss << name << ": $" << price
-        << " | " << getChange(1)  << "% today"
-        << ", " << getChange(5)  << "% week"
-        << ", " << getChange(20) << "% month"
-        << ", " << getTotalChange() << "% all time";
+        << " | " << getChange(1)  << "% today" << ", " << getChange(5)  << "% week"
+        << ", " << getChange(20) << "% month" << ", " << getTotalChange() << "% all time";
     return oss.str();
 }

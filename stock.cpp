@@ -1,12 +1,12 @@
 #include "stock.h"
 
-stock::stock(string name, float revenue, float expenditures, float assets, 
+stock::stock(string name, float revenue, float expenditures, float netAssets, 
              float rangeLower, float rangeUpper, float hype, int numLeft)
     : security(name, (revenue * hype) / numLeft)
 {
     this->revenue = revenue;
     this->expenditures = expenditures;
-    this->assets = assets;
+    this->netAssets = netAssets;
     this->rangeLower = rangeLower;
     this->rangeUpper = rangeUpper;
     this->hype = hype;
@@ -15,12 +15,25 @@ stock::stock(string name, float revenue, float expenditures, float assets,
 }
 
 void stock::simDay() {
-    nextDay();
-    applyRange();
+    // Price at open
     calcPrice();
+
+    // Market moves to match price
     trade();
     calcPrice();
+
+    // People react to changes after market close
     calcHype();
+
+    // Buisness expands or shrinks
+    adjustRange();
+    applyRange();
+
+    // Investments and debt grow
+    applyInterest();
+
+    // Move forward 1 day
+    nextDay();
 }
 
 void stock::applyRange() {
@@ -30,8 +43,10 @@ void stock::applyRange() {
 
     // Change assets and subtract that from expenditures
     float assetChange = genRandFloat(rangeLower, rangeUpper) / 4;
-    assets += assetChange;
-    expenditures += assetChange;
+    netAssets += assetChange;
+    if (assetChange < 0) {
+        revenue += assetChange;
+    }
 }
 
 void stock::calcPrice() {
@@ -66,6 +81,19 @@ void stock::calcHype() {
     } else {
         hype += (max(-0.005f, newHype) - genRandFloat(-0.01f, 0.01f));
     }
+
+    // Pops bubbles
+    if (genRandFloat(hype, 100) > 99) {
+        hype = 1;
+    }
+}
+
+void stock::adjustRange() {
+    rangeUpper = max(((revenue - expenditures) / 1000), ((netAssets - expenditures) / 1000));
+    rangeUpper = max(rangeUpper, revenue / 100000);
+
+    rangeLower = min(((netAssets - expenditures) / 1000), ((revenue - expenditures) / 1000));
+    rangeLower = min(rangeLower, -expenditures / 100000);
 }
 
 float stock::genRandFloat(float lower, float upper) {
@@ -75,17 +103,18 @@ float stock::genRandFloat(float lower, float upper) {
     return range(gen);
 }
 
+void stock::applyInterest() {
+    netAssets *= 0.005;
+}
+
 string stock::debugString() {
     ostringstream oss;
     oss << fixed << setprecision(2);
     oss << getName() << " - $" << getPrice()
-        << " | " << getChange(1)  << "% today"
-        << ", " << getChange(5)  << "% week"
-        << ", " << getChange(20) << "% month"
-        << ", " << getTotalChange() << "% all time"
-        << " | rev $" << revenue
-        << ", exp $" << expenditures
-        << ", assets $" << assets
-        << ", hype " << hype;
+        << " | " << getChange(1)  << "% today"<< ", " << getChange(5)  << "% week"
+        << ", " << getChange(20) << "% month" << ", " << getTotalChange() 
+        << "% all time" << " | rev $" << revenue << ", exp $" << expenditures
+        << ", assets $" << netAssets << ", hype " << hype
+        << "| " << rangeLower << " -> " << rangeUpper;
     return oss.str();
 }
