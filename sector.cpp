@@ -4,6 +4,10 @@ sector::sector(string name) {
     this->name = name;
 }
 
+string sector::getName() {
+    return name;
+}
+
 void sector::addStock(stock* s) {
     stocks.push_back(s);
 }

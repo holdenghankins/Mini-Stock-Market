@@ -10,6 +10,7 @@ private:
     vector<stock*> stocks;
 public:
     sector(string name);
+    string getName();
     void addStock(stock* s);
     void simDay();
     string toString();
