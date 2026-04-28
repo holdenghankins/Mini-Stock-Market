@@ -1,5 +1,5 @@
-sim: security.o stock.o main.o
-	g++ -g security.o stock.o main.o -o sim
+sim: security.o stock.o fund.o sector.o market.o main.o
+	g++ -g security.o stock.o fund.o sector.o market.o main.o -o sim
 
 security.o: security.cpp
 	g++ -c -g security.cpp
@@ -7,7 +7,16 @@ security.o: security.cpp
 stock.o: security.h stock.cpp
 	g++ -c -g stock.cpp
 
-main.o: security.h stock.h main.cpp
+fund.o: security.h fund.cpp
+	g++ -c -g fund.cpp
+
+sector.o: security.h stock.h fund.h sector.cpp
+	g++ -c -g sector.cpp
+
+market.o: security.h stock.h fund.h sector.h market.cpp
+	g++ -c -g market.cpp
+
+main.o: security.h stock.h fund.h sector.h market.h main.cpp
 	g++ -c -g main.cpp
 
 clean:

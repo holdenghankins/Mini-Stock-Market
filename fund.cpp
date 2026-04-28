@@ -1,10 +1,10 @@
 #include "fund.h"
 
-fund::fund(sector* sectorPtr) {
-    this->sectorPtr = sectorPtr;
+fund::fund(string name) : security(name, 0) {
 }
 
 void fund::setStocks(vector<stock*>* stocks) {
+    isFirstDay = 1;
     this->stocks = stocks;
 }
 
@@ -27,14 +27,15 @@ void fund::findThreeStocks() {
 }
 
 void fund::calcPrice() {
-    setPrice((largest->getPrice() * 0.4f) + (middle->getPrice() * 35) + (smallest->getPrice() * 35));
-    nextDay();
+    setPrice((largest->getPrice() * 0.4f) + (middle->getPrice() * 0.35f) + (smallest->getPrice() * 0.35f));
+    if (isFirstDay) {
+        setInitPrice(getPrice());
+        isFirstDay = false;
+    }
 }
 
-string fund::toString() {
+void fund::simDay() {
+    findThreeStocks();
     calcPrice();
-    ostringstream oss;
-    oss << getName() << "(" << sectorPtr->getName() << ") : $" << getPrice()
-        << " | " << getChange(1)  << "% today" << ", " << getChange(5)  << "% week"
-        << ", " << getChange(20) << "% month" << ", " << getTotalChange() << "% all time";
+    nextDay();
 }

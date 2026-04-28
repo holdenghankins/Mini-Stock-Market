@@ -27,6 +27,7 @@ public:
     float getPrice();
     void setPrice(float price);
     void nextDay();
+    void setInitPrice(float initPrice);
 
     // Initilizes the history array with -1 values while setting day[0] to price
     // Sets the day to 0

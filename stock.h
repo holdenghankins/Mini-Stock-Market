@@ -15,7 +15,6 @@ private:
     float rangeLower;
     float rangeUpper;
     float hype;
-    float history[30];
     int numLeft;
 
     // PRIVATE METHODS

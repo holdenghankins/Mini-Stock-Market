@@ -1,23 +1,23 @@
 #ifndef FUND_H_EXISTS
-#define FUN_H_EXISTS
+#define FUND_H_EXISTS
 
+#include <vector>
 #include <list>
-#include "sector.h"
+#include "stock.h"
 
 class fund : public security {
 private:
     stock* largest;
     stock* middle;
     stock* smallest;
-    sector* sectorPtr;
     vector<stock*>* stocks;
+    int isFirstDay;
 
     void findThreeStocks();
     void calcPrice();
 public:
-    fund(sector* sectorPtr);
+    fund(string name);
     void setStocks(vector<stock*>* stocks);
-    string toString();
+    void simDay();
 };
-
 #endif

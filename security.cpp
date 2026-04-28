@@ -11,6 +11,11 @@ security::security(string name, float initPrice) {
     this->name = name;
     this->initPrice = initPrice;
     price = initPrice;
+    initHistory();
+}
+
+void security::setInitPrice(float p) {
+    initPrice = p;
 }
 
 void security::initHistory() {
