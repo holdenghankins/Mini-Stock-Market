@@ -40,12 +40,12 @@ void stock::simDay() {
 void stock::applyRange() {
     // Change profits
     revenue += genRandFloat(rangeLower, rangeUpper);
-    expenditures -= genRandFloat(rangeLower, rangeUpper) / 2;
+    expenditures -= genRandFloat(rangeLower, rangeUpper) / 2.0f;
 
     // Change assets and subtract that from expenditures
-    float assetChange = genRandFloat(rangeLower, rangeUpper) / 4;
+    float assetChange = genRandFloat(rangeLower, rangeUpper) / 4.0f;
     netAssets += assetChange;
-    if (assetChange < 0) {
+    if (assetChange < 0.0f) {
         revenue += assetChange;
     }
 }
@@ -69,32 +69,32 @@ void stock::calcHype() {
     }
 
     // Keeps increment small and localized sim doesn't speed off
-    float newHype = dayChange / 100.0f;
+    float newHype = dayChange / 100;
 
     /*
     Adds some variability to the movement
     else if used to check min/max and make sure hype doesn't get too big
      */
-    if (newHype > 0) {
+    if (newHype > 0.0f) {
         hype += (min(0.005f, newHype) + genRandFloat(-0.01f, 0.01f));
     } else {
         hype += (max(-0.005f, newHype) - genRandFloat(-0.01f, 0.01f));
     }
 
     // Pops bubbles
-    if (genRandFloat(hype, 1000) > 999) {
-        hype = 1;
+    if (genRandFloat(hype, 1000.0f) > 999.0f) {
+        hype = 0.8f;
     }
 }
 
 void stock::adjustRange() {
     // Finds most fitting value for company's model
-    rangeUpper = max(((revenue - expenditures) / 1000), ((netAssets - expenditures) / 1000));
-    rangeUpper = max(rangeUpper, revenue / 100000);
+    rangeUpper = max(((revenue - expenditures) / 1000.0f), ((netAssets - expenditures) / 1000.0f));
+    rangeUpper = max(rangeUpper, revenue / 100000.0f);
 
     // Finds fitting min
-    rangeLower = min(((netAssets - expenditures) / 1000), ((revenue - expenditures) / 1000));
-    rangeLower = min(rangeLower, -expenditures / 100000);
+    rangeLower = min(((netAssets - expenditures) / 1000.0f), ((revenue - expenditures) / 1000.0f));
+    rangeLower = min(rangeLower, -expenditures / 100000.0f);
 }
 
 float stock::genRandFloat(float lower, float upper) {
@@ -106,7 +106,14 @@ float stock::genRandFloat(float lower, float upper) {
 }
 
 void stock::applyInterest() {
-    netAssets *= 0.005; // 0.005 is arbitrary, change if it first your project
+    int interest = netAssets * 0.005f;
+
+    // Interest means assets slowly affect bottom line
+    if (interest > 0) {
+        revenue += interest;
+    } else {
+        expenditures += interest;
+    }
 }
 
 string stock::debugString() {

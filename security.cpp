@@ -31,7 +31,7 @@ float security::getPrice() {
 }
 
 void security::setPrice(float price) {
-    this->price = min(price, 0.00f); // prevents negative prices
+    this->price = max(price, 0.00f); // prevents negative prices
 }
 
 float security::getChange(int daysAgo) {
