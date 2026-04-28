@@ -38,7 +38,11 @@ private:
 public:
     stock(string name, float revenue, float expenditures, float netAssets, 
         float hype, int numLeft);
+
+    // Calcs the price at start, makes all trades, calcs price at end, and does hidden calcs before starting new day
     void simDay();
+
+    // Used to see inner workings of values
     string debugString();
 };
 #endif

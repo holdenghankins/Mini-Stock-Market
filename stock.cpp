@@ -6,10 +6,12 @@ stock::stock(string name, float revenue, float expenditures, float netAssets, fl
     this->revenue = revenue;
     this->expenditures = expenditures;
     this->netAssets = netAssets;
-    this->rangeLower = 0;
-    this->rangeUpper = 0;
     this->hype = hype;
     this->numLeft = numLeft;
+
+    // Load default values for unititiated variables
+    this->rangeLower = 0;
+    this->rangeUpper = 0;
     initHistory();
 }
 
@@ -60,21 +62,19 @@ void stock::trade() {
 
 void stock::calcHype() {
     float dayChange = getChange(1);
-    float weekChange = getChange(5);
-    float monthChange = getChange(20);
 
     // Handles not enough elapsed time
     if (dayChange == -1.0f) {
         dayChange = 0.0f;
     }
-    if (weekChange == -1.0f) {
-        weekChange = 0.0f;
-    }
-    if (monthChange == -1.0f) {
-        monthChange = 0.0f;
-    }
 
+    // Keeps increment small and localized sim doesn't speed off
     float newHype = dayChange / 100.0f;
+
+    /*
+    Adds some variability to the movement
+    else if used to check min/max and make sure hype doesn't get too big
+     */
     if (newHype > 0) {
         hype += (min(0.005f, newHype) + genRandFloat(-0.01f, 0.01f));
     } else {
@@ -88,14 +88,17 @@ void stock::calcHype() {
 }
 
 void stock::adjustRange() {
+    // Finds most fitting value for company's model
     rangeUpper = max(((revenue - expenditures) / 1000), ((netAssets - expenditures) / 1000));
     rangeUpper = max(rangeUpper, revenue / 100000);
 
+    // Finds fitting min
     rangeLower = min(((netAssets - expenditures) / 1000), ((revenue - expenditures) / 1000));
     rangeLower = min(rangeLower, -expenditures / 100000);
 }
 
 float stock::genRandFloat(float lower, float upper) {
+    // I am also not very fond of this
     random_device rng;
     mt19937 gen(rng());
     uniform_real_distribution <float> range(lower, upper);
@@ -103,7 +106,7 @@ float stock::genRandFloat(float lower, float upper) {
 }
 
 void stock::applyInterest() {
-    netAssets *= 0.005;
+    netAssets *= 0.005; // 0.005 is arbitrary, change if it first your project
 }
 
 string stock::debugString() {

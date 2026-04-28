@@ -1,7 +1,13 @@
 Notes:
     All months have a perfect 4 weeks (makes math easier)
-    Bank holidays are ignored
-    Assets can be negative to represent debt
+    Bank holidays are also ignored
+
+    netAssets reprents all assets, debt, and investments to limit scale creep
+
+    My C prof (the very uncontroversal turkstra at Purdue) told me to comment h files using this format
+    // line 1
+    // line 2
+    I do not like this, but he is smarter than me so I'll just stick with that
 
 abs securty {
     str name
@@ -23,7 +29,7 @@ abs securty {
 stock:public security {
     float revenue
     float expenditures
-    float assets
+    float netAssets
     array<float, 2> growth
     float hype
     int numLeft
@@ -41,7 +47,7 @@ stock:public security {
         generate 3 random numbers, g1 g2 g3, ∈ g
         add g1 to revenue
         add -g2 to expenditures
-        add g3/4 to assets, subtract from revenue
+        add g3/4 to netAssets, subtract from revenue
     }
 
     void calcPrice() {
@@ -85,11 +91,6 @@ fund:public security {
 }
 
 market {
-    struct index {
-        array<security*, numSecurities> numSecurities
-        float value
-    }
-
     array<sector*, numStocks> sectors
 
     void simDay {
@@ -98,3 +99,7 @@ market {
         }
     }
 }
+
+new addition: DYNAMIC RANGE LIMITS
+upper bound : max (net profit, assets - expenditures, 0.1% of profit)
+lower bound: min (net losses, debt and expenditures, 0.1% of losses)
